@@ -11,6 +11,41 @@ def toc(tstart, name="Operation"):
   print('%s took: %s sec.\n' % (name,(time.time() - tstart)))
 
 
+# # map correlation
+# #-----------------------------------------------------------------------------------------------------------------------
+# def mapCorrelation(im, x_im, y_im, vp, xs, ys):
+#   '''
+#   INPUT 
+#   im              the map 
+#   x_im,y_im       physical x,y positions of the grid map cells
+#   vp[0:2,:]       occupied x,y positions from range sensor (in physical unit)  
+#   xs,ys           physical x,y,positions you want to evaluate "correlation" 
+
+#   OUTPUT 
+#   cpr             sum of the cell values of all the positions hit by range sensor
+#   '''
+#   nx = im.shape[0]  # height
+#   ny = im.shape[1]  # width
+#   xmin = x_im[0]    # -30
+#   xmax = x_im[-1]   # 30
+#   xresolution = (xmax-xmin)/(nx-1)   # 0.05
+#   ymin = y_im[0]    # -30
+#   ymax = y_im[-1]   # 30
+#   yresolution = (ymax-ymin)/(ny-1)   # 0.05
+#   nxs = xs.size     # 9
+#   nys = ys.size     # 9
+#   cpr = np.zeros((nxs, nys))    # 9 x 9
+#   for jy in range(0,nys):
+#     y1 = vp[1,:] + ys[jy]
+#     iy = np.int16(np.round((y1-ymin)/yresolution))    # in grid
+#     for jx in range(0,nxs):
+#       x1 = vp[0,:] + xs[jx]
+#       ix = np.int16(np.round((x1-xmin)/xresolution))
+#       valid = np.logical_and(np.logical_and((iy >=0),(iy < ny)),np.logical_and((ix >=0),(ix<nx)))
+#       cpr[jx,jy] = np.sum(im[ix[valid],iy[valid]])
+#   return cpr
+
+
 # map correlation
 #-----------------------------------------------------------------------------------------------------------------------
 def mapCorrelation(im, x_im, y_im, vp, xs, ys):
@@ -24,30 +59,26 @@ def mapCorrelation(im, x_im, y_im, vp, xs, ys):
   OUTPUT 
   cpr             sum of the cell values of all the positions hit by range sensor
   '''
-  nx = im.shape[0]
-  ny = im.shape[1]
-  xmin = x_im[0]
-  xmax = x_im[-1]
-  xresolution = (xmax-xmin)/(nx-1)
-  ymin = y_im[0]
-  ymax = y_im[-1]
-  yresolution = (ymax-ymin)/(ny-1)
-  nxs = xs.size
-  nys = ys.size
-  cpr = np.zeros((nxs, nys))
+  nx = im.shape[0]  # height
+  ny = im.shape[1]  # width
+  xmin = x_im[0]    # -30
+  xmax = x_im[-1]   # 30
+  xresolution = (xmax-xmin)/(nx-1)   # 0.05
+  ymin = y_im[0]    # -30
+  ymax = y_im[-1]   # 30
+  yresolution = (ymax-ymin)/(ny-1)   # 0.05
+  nxs = xs.size     # 9
+  nys = ys.size     # 9
+  cpr = np.zeros((nxs, nys))    # 9 x 9
   for jy in range(0,nys):
-    y1 = vp[1,:] + ys[jy] # 1 x 1076
-    iy = np.int16(np.round((y1-ymin)/yresolution))
+    y1 = vp[1,:] + ys[jy]
+    iy = np.int16(np.round((y1-ymin)/yresolution))    # in grid
     for jx in range(0,nxs):
-      x1 = vp[0,:] + xs[jx] # 1 x 1076
+      x1 = vp[0,:] + xs[jx]
       ix = np.int16(np.round((x1-xmin)/xresolution))
-      valid = np.logical_and( np.logical_and((iy >=0), (iy < ny)), \
-			                        np.logical_and((ix >=0), (ix < nx)))
+      valid = np.logical_and(np.logical_and((iy >=0),(iy < ny)),np.logical_and((ix >=0),(ix<nx)))
       cpr[jx,jy] = np.sum(im[ix[valid],iy[valid]])
   return cpr
-
-
-
 
 
 
@@ -134,6 +165,9 @@ def test_mapCorrelation():
   ax3.plot_surface(X,Y,c,linewidth=0,cmap=plt.cm.jet, antialiased=False,rstride=1, cstride=1)
   plt.show()
 #-----------------------------------------------------------------------------------------------------------------------
+
+
+
 
 
 
